@@ -33,4 +33,12 @@ i {
   user-select: none;
 }
 
+::-webkit-scrollbar{
+  width: 12px;
+}
+
+::-webkit-scrollbar-thumb{
+  background-color: var(--primary-color);
+}
+
 /* Finish Default Styles */

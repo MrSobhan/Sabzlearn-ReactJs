@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import Typewriter from "typewriter-effect";
+import Typewriter from "typewriter-effect";
 import LandingCounter from "../LandingCounter/LandingCounter";
 
 import "./Landing.css";
@@ -10,7 +10,7 @@ export default function Landing() {
     <section class="landing">
       <div class="container">
         <h1 class="landing__title">
-          {/* <Typewriter
+          <Typewriter
             onInit={(typeWriter) => {
               typeWriter
                 .typeString("ما به هر قیمتی دوره آموزشی تولید نمی‌کنیم!")
@@ -24,7 +24,7 @@ export default function Landing() {
             options={{
               loop: true,
             }}
-          /> */}
+          />
         </h1>
         <h2 class="landing__subtitle">
           با آکادمی سبزلرن، برنامه نویسی رو با خیال راحت یاد بگیر و پیشرفت کن.

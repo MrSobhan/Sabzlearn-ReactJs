@@ -5,7 +5,7 @@ import Footer from "./../../Components/Footer/Footer";
 import Breadcrumb from "../../Components/Breadcrumb/Breadcrumb";
 import CourseDetailBox from "../../Components/CourseDetailBox/CourseDetailBox";
 import CommentsTextArea from "../../Components/CommentsTextArea/CommentsTextArea";
-// import Accordion from "react-bootstrap/Accordion";
+import Accordion from "react-bootstrap/Accordion";
 
 import "./CourseInfo.css";
 
@@ -214,7 +214,7 @@ export default function CourseInfo() {
                     </a>
                   </div>
 
-                  {/* <div class="introduction__topic">
+                  <div class="introduction__topic">
                     <Accordion defaultActiveKey="0">
                       <Accordion.Item eventKey="0" className="accordion">
                         <Accordion.Header>معرفی دوره</Accordion.Header>
@@ -287,7 +287,7 @@ export default function CourseInfo() {
                         </Accordion.Body>
                       </Accordion.Item>
                     </Accordion>
-                  </div> */}
+                  </div>
                 </div>
                 {/* Finish Introduction */}
 
