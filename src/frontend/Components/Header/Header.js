@@ -1,4 +1,5 @@
 import React from "react";
+import Landing from "../Landing/Landing";
 import Navbar from "../Navbar/Navbar";
 import Topbar from "../Topbar/Topbar";
 
@@ -9,6 +10,7 @@ export default function Header() {
     <header class="header">
         <Topbar />
         <Navbar />
+        <Landing />
     </header>
   );
 }
