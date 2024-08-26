@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../../Components/Footer/Footer";
 import Button from "../../Components/Form/Button";
@@ -12,10 +12,17 @@ import {
   maxValidator,
   emailValidator,
 } from "../../validators/rules";
+import AuthContext from "../../context/authContext";
+import swal from "sweetalert";
+import { useNavigate } from "react-router-dom";
 
 import "./Register.css";
 
 export default function Register() {
+  const navigate = useNavigate();
+  const authContext = useContext(AuthContext)
+  console.log(authContext);
+
   const [formState, onInputHandler] = useForm(
     {
       name: {
@@ -30,6 +37,10 @@ export default function Register() {
         value: "",
         isValid: false,
       },
+      phoneNumber: {
+        value: "",
+        isValid: false,
+      },
       password: {
         value: "",
         isValid: false,
@@ -38,8 +49,6 @@ export default function Register() {
     false
   );
 
-  console.log(formState);
-
   const registerNewUser = (event) => {
     event.preventDefault();
 
@@ -47,22 +56,36 @@ export default function Register() {
       name: formState.inputs.name.value,
       username: formState.inputs.username.value,
       email: formState.inputs.email.value,
+      phone: formState.inputs.phoneNumber.value,
       password: formState.inputs.password.value,
       confirmPassword: formState.inputs.password.value,
     };
 
-    fetch('http://localhost:4000/v1/auth/register', {
+    fetch(`http://localhost:4000/v1/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newUserInfos)
+      body: JSON.stringify(newUserInfos),
     })
       .then((res) => res.json())
       .then((result) => {
-        console.log(result);
+        swal({
+          title: "با موفقیت ثبت نام شدید",
+          icon: "success",
+          buttons: "ورود به پنل",
+        }).then((value) => {
+          navigate("/");
+        });
+        authContext.login(result.user, result.accessToken)
       })
-      .catch(err => console.log(err));
+      .catch((err) => {
+        swal({
+          title: "همچین کاربری وجود دارد اطلاعات اشتباه است",
+          icon: "error",
+          buttons: "تلاش دوباره",
+        });
+      });
 
     console.log("User Register");
   };
@@ -134,6 +157,22 @@ export default function Register() {
                 ]}
               />
               <i className="login-form__password-icon fa fa-envelope"></i>
+            </div>
+            <div className="login-form__username">
+              <Input
+                type="text"
+                placeholder="شماره تلفن"
+                className="login-form__username-input"
+                element="input"
+                id="phoneNumber"
+                onInputHandler={onInputHandler}
+                validations={[
+                  requiredValidator(),
+                  minValidator(11),
+                  maxValidator(11),
+                ]}
+              />
+              <i className="login-form__username-icon fa fa-user"></i>
             </div>
             <div className="login-form__password">
               <Input

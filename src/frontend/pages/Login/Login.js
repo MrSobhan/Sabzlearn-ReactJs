@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../../Components/Footer/Footer";
 import Button from "../../Components/Form/Button";
@@ -6,6 +6,10 @@ import Input from "../../Components/Form/Input";
 import Navbar from "../../Components/Navbar/Navbar";
 import Topbar from "../../Components/Topbar/Topbar";
 import { useForm } from "../../hooks/useForm";
+import AuthContext from "../../context/authContext";
+import swal from "sweetalert";
+import { useNavigate } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 
 import {
   requiredValidator,
@@ -17,6 +21,10 @@ import {
 import "./Login.css";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const authContext = useContext(AuthContext);
+  const [isGoogleRecaptchaVerify, setIsGoogleRecaptchaVerify] = useState(false)
+
   const [formState, onInputHandler] = useForm(
     {
       username: {
@@ -31,12 +39,54 @@ export default function Login() {
     false
   );
 
-  console.log(formState);
-
   const userLogin = (event) => {
     event.preventDefault();
-    console.log("User Login");
+
+    const userData = {
+      identifier: formState.inputs.username.value,
+      password: formState.inputs.password.value,
+    };
+
+    fetch(`http://localhost:4000/v1/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    })
+      .then((res) => {
+        console.log(res);
+        if (!res.ok) {
+          return res.text().then((text) => {
+            throw new Error(text);
+          });
+        } else {
+          return res.json();
+        }
+      })
+      .then((result) => {
+        swal({
+          title: "با موفقیت لاگین شدید",
+          icon: "success",
+          buttons: "ورود به پنل",
+        }).then((value) => {
+          navigate("/");
+        });
+        authContext.login({}, result.accessToken);
+      })
+      .catch((err) => {
+        swal({
+          title: "همچین کاربری وجود ندارد",
+          icon: "error",
+          buttons: "تلاش دوباره",
+        });
+      });
   };
+
+  const onChangeHandler = () => {
+    console.log('گوگل ری‌کپچا وریفای شد`');
+    setIsGoogleRecaptchaVerify(true)
+  }
 
   return (
     <>
@@ -67,7 +117,7 @@ export default function Login() {
                   requiredValidator(),
                   minValidator(8),
                   maxValidator(20),
-                  emailValidator()
+                  // emailValidator(),
                 ]}
                 onInputHandler={onInputHandler}
               />
@@ -90,15 +140,18 @@ export default function Login() {
 
               <i className="login-form__password-icon fa fa-lock-open"></i>
             </div>
+            <div className="login-form__password recaptcha-parent">
+              <ReCAPTCHA sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" onChange={onChangeHandler} />
+            </div>
             <Button
               className={`login-form__btn ${
-                formState.isFormValid
+                (formState.isFormValid && isGoogleRecaptchaVerify)
                   ? "login-form__btn-success"
                   : "login-form__btn-error"
               }`}
               type="submit"
               onClick={userLogin}
-              disabled={!formState.isFormValid}
+              disabled={(!formState.isFormValid || !isGoogleRecaptchaVerify)}
             >
               <i className="login-form__btn-icon fas fa-sign-out-alt"></i>
               <span className="login-form__btn-text">ورود</span>
