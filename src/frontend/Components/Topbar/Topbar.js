@@ -1,9 +1,9 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import { Link } from "react-router-dom";
 
 import "./Topbar.css";
 
-export default function Topbar() {
+export default memo(function Topbar() {
   const [allTopbarLinks, setAllTopbarLinks] = useState([]);
 
   useEffect(() => {
@@ -13,10 +13,9 @@ export default function Topbar() {
   }, []);
 
   const getRandomItemsFromArray = (arr, randomCount) => {
-    console.log("tApbar");
     const shuffled = [...arr].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, randomCount);
-  }
+  };
 
   return (
     <div className="top-bar">
@@ -25,12 +24,12 @@ export default function Topbar() {
           <div className="top-bar__right">
             <ul className="top-bar__menu">
               {getRandomItemsFromArray(allTopbarLinks, 5).map((link) => (
-                  <li className="top-bar__item">
-                    <Link to={link.href} className="top-bar__link">
-                      {link.title}
-                    </Link>
-                  </li>
-                ))}
+                <li className="top-bar__item">
+                  <Link to={link.href} className="top-bar__link">
+                    {link.title}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="top-bar__left">
@@ -51,4 +50,4 @@ export default function Topbar() {
       </div>
     </div>
   );
-}
+})

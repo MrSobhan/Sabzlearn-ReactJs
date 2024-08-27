@@ -13,13 +13,11 @@ import {
   emailValidator,
 } from "../../validators/rules";
 import AuthContext from "../../context/authContext";
-import swal from "sweetalert";
-import { useNavigate } from "react-router-dom";
 
 import "./Register.css";
 
 export default function Register() {
-  const navigate = useNavigate();
+
   const authContext = useContext(AuthContext)
   console.log(authContext);
 
@@ -34,10 +32,6 @@ export default function Register() {
         isValid: false,
       },
       email: {
-        value: "",
-        isValid: false,
-      },
-      phoneNumber: {
         value: "",
         isValid: false,
       },
@@ -56,7 +50,7 @@ export default function Register() {
       name: formState.inputs.name.value,
       username: formState.inputs.username.value,
       email: formState.inputs.email.value,
-      phone: formState.inputs.phoneNumber.value,
+      phone:'09226177524',
       password: formState.inputs.password.value,
       confirmPassword: formState.inputs.password.value,
     };
@@ -70,21 +64,8 @@ export default function Register() {
     })
       .then((res) => res.json())
       .then((result) => {
-        swal({
-          title: "با موفقیت ثبت نام شدید",
-          icon: "success",
-          buttons: "ورود به پنل",
-        }).then((value) => {
-          navigate("/");
-        });
+        console.log(result);
         authContext.login(result.user, result.accessToken)
-      })
-      .catch((err) => {
-        swal({
-          title: "همچین کاربری وجود دارد اطلاعات اشتباه است",
-          icon: "error",
-          buttons: "تلاش دوباره",
-        });
       });
 
     console.log("User Register");
@@ -157,22 +138,6 @@ export default function Register() {
                 ]}
               />
               <i className="login-form__password-icon fa fa-envelope"></i>
-            </div>
-            <div className="login-form__username">
-              <Input
-                type="text"
-                placeholder="شماره تلفن"
-                className="login-form__username-input"
-                element="input"
-                id="phoneNumber"
-                onInputHandler={onInputHandler}
-                validations={[
-                  requiredValidator(),
-                  minValidator(11),
-                  maxValidator(11),
-                ]}
-              />
-              <i className="login-form__username-icon fa fa-user"></i>
             </div>
             <div className="login-form__password">
               <Input

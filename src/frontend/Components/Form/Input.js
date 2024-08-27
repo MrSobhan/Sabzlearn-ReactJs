@@ -32,7 +32,7 @@ export default function Input(props) {
   }, [value]);
 
   const onChangeHandler = (event) => {
-    // console.log(event.target.value);
+    console.log(event.target.value);
     dispatch({
       type: "CHANGE",
       value: event.target.value,

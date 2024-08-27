@@ -213,11 +213,18 @@ exports.getSessionInfo = async (req, res) => {
   const course = await courseModel
     .findOne({ shortName: req.params.shortName })
     .lean();
-
+  // const courseTest = await courseModel
+  //   .findOne({ shortName: 'npm' })
+  //   .lean();
+    
+  //   console.log(courseTest);
+  //   console.log("----------------");
+    
   const session = await sessionModel.findOne({
     course: course._id,
     _id: req.params.sessionID,
   });
+
 
   const sessions = await sessionModel.find({ course: course._id });
 

@@ -23,7 +23,7 @@ import "./Login.css";
 export default function Login() {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
-  const [isGoogleRecaptchaVerify, setIsGoogleRecaptchaVerify] = useState(false)
+  const [isGoogleRecaptchaVerify, setIsGoogleRecaptchaVerify] = useState(true)
 
   const [formState, onInputHandler] = useForm(
     {
@@ -141,7 +141,7 @@ export default function Login() {
               <i className="login-form__password-icon fa fa-lock-open"></i>
             </div>
             <div className="login-form__password recaptcha-parent">
-              <ReCAPTCHA sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" onChange={onChangeHandler} />
+              <ReCAPTCHA sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" onChange={onChangeHandler} />,
             </div>
             <Button
               className={`login-form__btn ${
