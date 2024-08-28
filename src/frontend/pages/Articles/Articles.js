@@ -16,7 +16,6 @@ export default function Articles() {
     fetch(`http://localhost:4000/v1/articles`)
       .then((res) => res.json())
       .then((allArticles) => {
-        console.log(allArticles);
         setArticles(allArticles);
       });
   }, []);
@@ -44,9 +43,7 @@ export default function Articles() {
             <div className="container">
               <div className="row">
                 {shownArticles.map((article) => (
-                  <ArticleBox
-                    {...article}
-                  />
+                  <ArticleBox key={article._id} {...article} />
                 ))}
               </div>
             </div>

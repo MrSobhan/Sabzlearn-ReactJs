@@ -40,7 +40,6 @@ export default function CourseInfo() {
         setCreatedAt(courseInfo.createdAt);
         setUpdatedAt(courseInfo.updatedAt);
         setCourseTeacher(courseInfo.creator)
-        console.log(courseInfo);
       });
   }, []);
 
@@ -65,7 +64,6 @@ export default function CourseInfo() {
           icon: 'success',
           buttons: 'تایید'
         })
-        console.log(result);
       });
   };
 
@@ -258,7 +256,7 @@ export default function CourseInfo() {
                       <Accordion.Item eventKey="0" className="accordion">
                         <Accordion.Header>جلسات دوره</Accordion.Header>
                         {sessions.map((session, index) => (
-                          <Accordion.Body className="introduction__accordion-body">
+                          <Accordion.Body key={session._id} className="introduction__accordion-body">
                             <div className="introduction__accordion-right">
                               <span className="introduction__accordion-count">
                                 {index + 1}

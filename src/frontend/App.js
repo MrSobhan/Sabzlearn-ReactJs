@@ -3,7 +3,7 @@ import { useRoutes } from "react-router-dom";
 import AuthContext from "./context/authContext";
 import routes from "./routes";
 
-// import "./App.css";
+import "./App.css";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

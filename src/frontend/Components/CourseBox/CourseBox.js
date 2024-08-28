@@ -6,6 +6,7 @@ import "./CourseBox.css";
 
 export default function CourseBox(props) {
   const [isImgShow, setIsImgShow] = useState(false);
+  // console.log(props.cover);
 
   const onImageLoaded = () => setIsImgShow(true);
 

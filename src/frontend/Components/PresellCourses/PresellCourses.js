@@ -15,7 +15,6 @@ export default function PresellCourses() {
     fetch("http://localhost:4000/v1/courses/presell")
       .then((res) => res.json())
       .then((allPresellCourses) => {
-        console.log(allPresellCourses);
         setPresellCourses(allPresellCourses);
       });
   }, []);
@@ -40,7 +39,7 @@ export default function PresellCourses() {
                 className="mySwiper"
               >
                 {presellCourses.map((course) => (
-                  <SwiperSlide>
+                  <SwiperSlide key={course._id}>
                     <CourseBox {...course} isSlider={true} />
                   </SwiperSlide>
                 ))}

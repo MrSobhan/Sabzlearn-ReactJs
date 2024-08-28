@@ -16,10 +16,7 @@ export default function Courses() {
   useEffect(() => {
     fetch(`http://localhost:4000/v1/courses`)
       .then((res) => res.json())
-      .then((allCourses) => {
-        console.log(allCourses);
-        setCourses(allCourses)
-      });
+      .then((allCourses) => setCourses(allCourses));
   }, []);
 
   return (
@@ -45,7 +42,7 @@ export default function Courses() {
             <div className="container">
               <div className="row">
                 {shownCourses.map((course) => (
-                  <CourseBox {...course} />
+                  <CourseBox {...course} key={course._id} />
                 ))}
               </div>
             </div>

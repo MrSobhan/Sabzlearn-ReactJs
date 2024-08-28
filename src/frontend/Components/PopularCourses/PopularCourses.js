@@ -16,7 +16,6 @@ export default function PopularCourses() {
     fetch(`http://localhost:4000/v1/courses/popular`)
       .then((res) => res.json())
       .then((popularCourses) => {
-        console.log(popularCourses);
         setCourses(popularCourses);
       });
   }, []);
@@ -42,7 +41,7 @@ export default function PopularCourses() {
                 className="mySwiper"
               >
                 {courses.map((course) => (
-                  <SwiperSlide>
+                  <SwiperSlide key={course._id}>
                     <CourseBox {...course} isSlider={true} />
                   </SwiperSlide>
                 ))}

@@ -13,7 +13,7 @@ export default function ArticleBox({ title, description, cover, shortName }) {
             className="article-card__link-img"
           >
             <img
-              src={'/'+cover}
+              src={'/images/blog/'+cover}
               className="article-card__img"
               alt="Article Cover"
             />
