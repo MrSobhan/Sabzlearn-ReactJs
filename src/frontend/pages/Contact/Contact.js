@@ -107,8 +107,8 @@ export default function Contact() {
                 validations={[
                   requiredValidator(),
                   minValidator(8),
-                  maxValidator(40),
-                  emailValidator(),
+                  maxValidator(50),
+                  // emailValidator(),
                 ]}
               />
               <i className="login-form__password-icon fa fa-envelope"></i>

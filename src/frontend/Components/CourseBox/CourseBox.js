@@ -6,7 +6,6 @@ import "./CourseBox.css";
 
 export default function CourseBox(props) {
   const [isImgShow, setIsImgShow] = useState(false);
-  // console.log(props.cover);
 
   const onImageLoaded = () => setIsImgShow(true);
 
@@ -19,7 +18,7 @@ export default function CourseBox(props) {
       <div className="course-box">
         <Link to={`/course-info/${props.shortName}`}>
           <img
-            src={'/images/courses/'+props.cover}
+            src={`http://localhost:4000/courses/covers/${props.cover}`}
             // src="https://placeimg.com/295/295/any/tech?t=190129384"
             alt="Course img"
             className="course-box__img"
@@ -37,7 +36,9 @@ export default function CourseBox(props) {
             <div className="course-box__teacher">
               <i className="fas fa-chalkboard-teacher course-box__teacher-icon"></i>
               <a href="#" className="course-box__teacher-link">
-                رضا دولتی
+                {
+                  props.creator
+                }
               </a>
             </div>
             <div className="course-box__rating">

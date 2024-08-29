@@ -742,3 +742,8 @@ ul {
 }
 
 /*# sourceMappingURL=main.css.map */
+
+.article-textarea {
+  width: 100%;
+  height: 200px;
+}

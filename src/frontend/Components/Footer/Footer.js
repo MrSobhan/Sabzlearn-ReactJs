@@ -5,12 +5,10 @@ import Input from "./../../Components/Form/Input";
 import { emailValidator } from "../../validators/rules";
 import { useForm } from "../../hooks/useForm";
 import swal from "sweetalert";
-import { useNavigate } from "react-router-dom";
 
 import "./Footer.css";
 
 export default function Footer() {
-    const navigate = useNavigate();
   const [formState, onInputHandler] = useForm(
     {
       email: {
@@ -39,8 +37,6 @@ export default function Footer() {
           title: "ایمیل شما با موفقیت در خبرنامه ثبت شد",
           icon: "success",
           buttons: "خیلی هم عالی",
-        }).then(() => {
-          navigate('/')
         });
       }
     });
