@@ -6,10 +6,10 @@ export default function Contact() {
   const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
-    getAllContacnts();
+    getAllContacts();
   }, []);
 
-  function getAllContacnts() {
+  function getAllContacts() {
     fetch("http://localhost:4000/v1/contact")
       .then((res) => res.json())
       .then((allContacts) => {
@@ -50,6 +50,7 @@ export default function Contact() {
         .then((res) => {
           console.log(res);
           if (res.ok) {
+            getAllContacts()
             return res.json();
           }
         })
@@ -77,7 +78,7 @@ export default function Contact() {
               icon: "success",
               buttons: "اوکی",
             }).then(() => {
-              getAllContacnts();
+              getAllContacts();
             });
           }
         });
@@ -103,7 +104,9 @@ export default function Contact() {
           <tbody>
             {contacts.map((contact, index) => (
               <tr>
-                <td>{index + 1}</td>
+                <td
+                  className={contact.answer === 1 ? 'answer-contact' : 'no-answer-contact'}
+                >{index + 1}</td>
                 <td>{contact.name}</td>
                 <td>{contact.email}</td>
                 <td>{contact.phone}</td>

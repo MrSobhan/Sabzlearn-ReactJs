@@ -10,8 +10,8 @@
 }
 
 .article-card__img {
-  border-radius: 1rem 1rem 0 0;
   width: 100%;
+  border-radius: 1rem 1rem 0 0;
 }
 
 .article-card__content {
