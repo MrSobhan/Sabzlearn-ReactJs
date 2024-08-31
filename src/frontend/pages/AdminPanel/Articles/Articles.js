@@ -5,6 +5,7 @@ import { useForm } from "./../../../hooks/useForm";
 import Input from "./../../../Components/Form/Input";
 import { minValidator } from "./../../../validators/rules";
 import Editor from "../../../Components/Form/Editor";
+import { Link } from "react-router-dom";
 
 export default function Articles() {
   const [articles, setArticles] = useState([]);
@@ -78,35 +79,64 @@ export default function Articles() {
     });
   };
 
-  const createArticle = event => {
-    event.preventDefault()
-    const localStorageDate = JSON.parse(localStorage.getItem('user'))
-    let formData = new FormData()
-    formData.append('title', formState.inputs.title.value)
-    formData.append('shortName', formState.inputs.shortName.value)
-    formData.append('description', formState.inputs.description.value)
-    formData.append('categoryID', articleCategory)
-    formData.append('cover', articleCover)
-    formData.append('body', articleBody)
+  const createArticle = (event) => {
+    event.preventDefault();
+    const localStorageDate = JSON.parse(localStorage.getItem("user"));
+    let formData = new FormData();
+    formData.append("title", formState.inputs.title.value);
+    formData.append("shortName", formState.inputs.shortName.value);
+    formData.append("description", formState.inputs.description.value);
+    formData.append("categoryID", articleCategory);
+    formData.append("cover", articleCover);
+    formData.append("body", articleBody);
 
     fetch(`http://localhost:4000/v1/articles`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        Authorization: `Bearer ${localStorageDate.token}`
+        Authorization: `Bearer ${localStorageDate.token}`,
       },
-      body: formData
-    }).then(res => {
-      if(res.ok) {
+      body: formData,
+    }).then((res) => {
+      if (res.ok) {
         swal({
-          title: 'مقاله جدید با موفقیت ایجاد شد',
-          icon: 'success',
-          buttons: 'اوکی'
+          title: "مقاله جدید با موفقیت ایجاد شد",
+          icon: "success",
+          buttons: "اوکی",
         }).then(() => {
-          getAllArticles()
-        })
+          getAllArticles();
+        });
       }
-    })
-  }
+    });
+  };
+  const saveArticleAsDraft = (event) => {
+    event.preventDefault();
+    const localStorageDate = JSON.parse(localStorage.getItem("user"));
+    let formData = new FormData();
+    formData.append("title", formState.inputs.title.value);
+    formData.append("shortName", formState.inputs.shortName.value);
+    formData.append("description", formState.inputs.description.value);
+    formData.append("categoryID", articleCategory);
+    formData.append("cover", articleCover);
+    formData.append("body", articleBody);
+
+    fetch(`http://localhost:4000/v1/articles/draft`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorageDate.token}`,
+      },
+      body: formData,
+    }).then((res) => {
+      if (res.ok) {
+        swal({
+          title: "مقاله جدید با موفقیت پیش نویس شد",
+          icon: "success",
+          buttons: "اوکی",
+        }).then(() => {
+          getAllArticles();
+        });
+      }
+    });
+  };
 
   return (
     <>
@@ -169,10 +199,7 @@ export default function Articles() {
                 <label class="input-title" style={{ display: "block" }}>
                   محتوا
                 </label>
-                <Editor 
-                  value={articleBody}
-                  setValue={setArticleBody}
-                />
+                <Editor value={articleBody} setValue={setArticleBody} />
                 <span class="error-message text-danger"></span>
               </div>
             </div>
@@ -209,7 +236,18 @@ export default function Articles() {
             <div class="col-12">
               <div class="bottom-form">
                 <div class="submit-btn">
-                  <input type="submit" value="افزودن" onClick={createArticle} />
+                  <input
+                    type="submit"
+                    value="انتشار"
+                    className="m-1"
+                    onClick={createArticle}
+                  />
+                  <input
+                    type="submit"
+                    value="پیش‌نویس"
+                    className="m-1"
+                    onClick={saveArticleAsDraft}
+                  />
                 </div>
               </div>
             </div>
@@ -225,6 +263,8 @@ export default function Articles() {
               <th>عنوان</th>
               <th>لینک</th>
               <th>نویسنده</th>
+              <th>وضعیت</th>
+              <th>مشاهده</th>
               <th>ویرایش</th>
               <th>حذف</th>
             </tr>
@@ -235,7 +275,21 @@ export default function Articles() {
                 <td>{index + 1}</td>
                 <td>{article.title}</td>
                 <td>{article.shortName}</td>
+
                 <td>{article.creator.name}</td>
+                <td>{article.publish === 1 ? "منتشر شده" : "پیش‌نویس"}</td>
+                <td>
+                  {article.publish === 1 ? (
+                    <i className="fa fa-check"></i>
+                  ) : (
+                    <Link
+                      to={`draft/${article.shortName}`}
+                      class="btn btn-primary edit-btn"
+                    >
+                      ادامه نوشتن
+                    </Link>
+                  )}
+                </td>
                 <td>
                   <button type="button" class="btn btn-primary edit-btn">
                     ویرایش

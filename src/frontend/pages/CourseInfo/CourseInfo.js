@@ -19,10 +19,22 @@ export default function CourseInfo() {
   const [courseDetails, setCourseDetails] = useState({});
   const [courseTeacher, setCourseTeacher] = useState({});
   const [courseCategory, setCourseCategory] = useState({});
+  const [relatedCourses, setRelatedCourses] = useState([]);
 
   const { courseName } = useParams();
 
   useEffect(() => {
+    getCourseDetails();
+
+    fetch(`http://localhost:4000/v1/courses/related/${courseName}`)
+      .then((res) => res.json())
+      .then((allData) => {
+        console.log(allData);
+        setRelatedCourses(allData);
+      });
+  }, []);
+
+  function getCourseDetails() {
     const localStorageData = JSON.parse(localStorage.getItem("user"));
 
     fetch(`http://localhost:4000/v1/courses/${courseName}`, {
@@ -43,9 +55,9 @@ export default function CourseInfo() {
         setCourseTeacher(courseInfo.creator);
         setCourseCategory(courseInfo.categoryID);
       });
-  }, []);
+  }
 
-  const submitComment = (newCommentBody) => {
+  const submitComment = (newCommentBody, commentScore) => {
     const localStorageData = JSON.parse(localStorage.getItem("user"));
 
     fetch(`http://localhost:4000/v1/comments`, {
@@ -57,6 +69,7 @@ export default function CourseInfo() {
       body: JSON.stringify({
         body: newCommentBody,
         courseShortName: courseName,
+        score: commentScore,
       }),
     })
       .then((res) => res.json())
@@ -67,6 +80,143 @@ export default function CourseInfo() {
           buttons: "تایید",
         });
       });
+  };
+
+  const registerInCourse = (course) => {
+    if (course.price === 0) {
+      swal({
+        title: "آیا از ثبت نام در دوره اطمینان دارید؟",
+        icon: "warning",
+        buttons: ["نه", "آره"],
+      }).then((result) => {
+        if (result) {
+          fetch(`http://localhost:4000/v1/courses/${course._id}/register`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${
+                JSON.parse(localStorage.getItem("user")).token
+              }`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              price: course.price,
+            }),
+          }).then((res) => {
+            console.log(res);
+            if (res.ok) {
+              swal({
+                title: "ثبت نام با موفقیت انجام شد",
+                icon: "success",
+                buttons: "اوکی",
+              }).then(() => {
+                getCourseDetails();
+              });
+            }
+          });
+        }
+      });
+    } else {
+      swal({
+        title: "آیا از ثبت نام در دوره اطمینان دارید؟",
+        icon: "warning",
+        buttons: ["نه", "آره"],
+      }).then((result) => {
+        if (result) {
+          swal({
+            title: "در صورت داشتن کد تخفیف وارد کنید:",
+            content: "input",
+            buttons: ["ثبت نام بدون کد تخفیف", "اعمال کد تخفیف"],
+          }).then((code) => {
+            if (code === null) {
+              fetch(`http://localhost:4000/v1/courses/${course._id}/register`, {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${
+                    JSON.parse(localStorage.getItem("user")).token
+                  }`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  price: course.price,
+                }),
+              }).then((res) => {
+                console.log(res);
+                if (res.ok) {
+                  swal({
+                    title: "ثبت نام با موفقیت انجام شد",
+                    icon: "success",
+                    buttons: "اوکی",
+                  }).then(() => {
+                    getCourseDetails();
+                  });
+                }
+              });
+            } else {
+              fetch(`http://localhost:4000/v1/offs/${code}`, {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${
+                    JSON.parse(localStorage.getItem("user")).token
+                  }`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  course: course._id,
+                }),
+              })
+                .then((res) => {
+                  console.log(res);
+
+                  if (res.status == 404) {
+                    swal({
+                      title: "کد تخفیف معتبر نیست",
+                      icon: "error",
+                      buttons: "ای بابا",
+                    });
+                  } else if (res.status == 409) {
+                    swal({
+                      title: "کد تخفیف قبلا استفاده شده :/",
+                      icon: "error",
+                      buttons: "ای بابا",
+                    });
+                  } else {
+                    return res.json();
+                  }
+                })
+                .then((code) => {
+                  fetch(
+                    `http://localhost:4000/v1/courses/${course._id}/register`,
+                    {
+                      method: "POST",
+                      headers: {
+                        Authorization: `Bearer ${
+                          JSON.parse(localStorage.getItem("user")).token
+                        }`,
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        price:
+                          course.price - (course.price * code.percent) / 100,
+                      }),
+                    }
+                  ).then((res) => {
+                    console.log(res);
+                    if (res.ok) {
+                      swal({
+                        title: "ثبت نام با موفقیت انجام شد",
+                        icon: "success",
+                        buttons: "اوکی",
+                      }).then(() => {
+                        getCourseDetails();
+                      });
+                    }
+                  });
+                });
+            }
+          });
+        }
+      });
+    }
   };
 
   return (
@@ -290,9 +440,7 @@ export default function CourseInfo() {
                                     {index + 1}
                                   </span>
                                   <i className="fab fa-youtube introduction__accordion-icon"></i>
-                                  <span
-                                    className="introduction__accordion-link"
-                                  >
+                                  <span className="introduction__accordion-link">
                                     {session.title}
                                   </span>
                                 </div>
@@ -363,7 +511,10 @@ export default function CourseInfo() {
                         دانشجوی دوره هستید
                       </span>
                     ) : (
-                      <span className="course-info__register-title">
+                      <span
+                        className="course-info__register-title"
+                        onClick={() => registerInCourse(courseDetails)}
+                      >
                         ثبت نام در دوره
                       </span>
                     )}
@@ -421,61 +572,32 @@ export default function CourseInfo() {
                     کلیک کنید
                   </span>
                 </div>
-                <div className="course-info">
-                  <span className="course-info__courses-title">
-                    دوره های مرتبط
-                  </span>
-                  <ul className="course-info__courses-list">
-                    <li className="course-info__courses-list-item">
-                      <a href="#" className="course-info__courses-link">
-                        <img
-                          src="/images/courses/js_project.png"
-                          alt="Course Cover"
-                          className="course-info__courses-img"
-                        />
-                        <span className="course-info__courses-text">
-                          پروژه های تخصصی با جاوا اسکریپت
-                        </span>
-                      </a>
-                    </li>
-                    <li className="course-info__courses-list-item">
-                      <a href="#" className="course-info__courses-link">
-                        <img
-                          src="/images/courses/fareelancer.png"
-                          alt="Course Cover"
-                          className="course-info__courses-img"
-                        />
-                        <span className="course-info__courses-text">
-                          تعیین قیمت پروژه های فریلنسری
-                        </span>
-                      </a>
-                    </li>
-                    <li className="course-info__courses-list-item">
-                      <a href="#" className="course-info__courses-link">
-                        <img
-                          src="/images/courses/nodejs.png"
-                          alt="Course Cover"
-                          className="course-info__courses-img"
-                        />
-                        <span className="course-info__courses-text">
-                          دوره Api نویسی
-                        </span>
-                      </a>
-                    </li>
-                    <li className="course-info__courses-list-item">
-                      <a href="#" className="course-info__courses-link">
-                        <img
-                          src="/images/courses/jango.png"
-                          alt="Course Cover"
-                          className="course-info__courses-img"
-                        />
-                        <span className="course-info__courses-text">
-                          متخصص جنگو
-                        </span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+                {relatedCourses.length !== 0 && (
+                  <div className="course-info">
+                    <span className="course-info__courses-title">
+                      دوره های مرتبط
+                    </span>
+                    <ul className="course-info__courses-list">
+                      {relatedCourses.map((course) => (
+                        <li className="course-info__courses-list-item">
+                          <Link
+                            to={`/course-info/${course.shortName}`}
+                            className="course-info__courses-link"
+                          >
+                            <img
+                              src={`http://localhost:4000/courses/covers/${course.cover}`}
+                              alt="Course Cover"
+                              className="course-info__courses-img"
+                            />
+                            <span className="course-info__courses-text">
+                              {course.name}
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
           </div>

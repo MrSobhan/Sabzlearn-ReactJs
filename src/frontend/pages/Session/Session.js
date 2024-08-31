@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import Topbar from "../../Components/Topbar/Topbar";
 import Footer from "../../Components/Footer/Footer";
 import Navbar from "../../Components/Navbar/Navbar";
@@ -6,7 +6,7 @@ import { Link, useParams } from "react-router-dom";
 
 import './Session.css'
 
-export default function Session() {
+export default memo(function Session() {
   const { courseName, sessionID } = useParams();
   const [session, setSession] = useState({})
   const [sessions, setSessions] = useState([])
@@ -118,4 +118,4 @@ export default function Session() {
       <Footer />
     </>
   );
-}
+})
