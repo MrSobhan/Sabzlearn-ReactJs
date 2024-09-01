@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useId, useState } from "react";
 import DataTable from "../../../Components/AdminPanel/DataTable/DataTable";
 import swal from "sweetalert";
 import Input from "./../../../Components/Form/Input";
@@ -141,6 +141,40 @@ export default function Users() {
       });
   };
 
+  const changeRole = (userID) => {
+
+    swal({
+      title: "لطفا نقش جدید را وارد نمایید:",
+      content: 'input'
+    }).then(value => {
+      if(value.length) {
+        const reqBodyInfos = {
+          role: value,
+          id: userID
+        }
+
+        fetch(`http://localhost:4000/v1/users/role`, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem('user')).token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(reqBodyInfos)
+        }).then(res => {
+          if(res.ok) {
+            swal({
+              title: "نقش کاربر مورد نظر با موفقیت تغییر یافت",
+              icon: "success",
+              buttons: "خیلی هم عالی"
+            })
+          }
+        })
+      }
+    })
+
+    
+  }
+
   return (
     <>
       <div class="home-content-edit">
@@ -260,7 +294,9 @@ export default function Users() {
               <th>شناسه</th>
               <th>نام و نام خانوادگی</th>
               <th>ایمیل</th>
+              <th>نقش</th>
               <th>ویرایش</th>
+              <th>تغییر سطح</th>
               <th>حذف</th>
               <th>بن</th>
             </tr>
@@ -272,12 +308,22 @@ export default function Users() {
                 <td>{user.name}</td>
                 {/* <td>09123443243</td> */}
                 <td>{user.email}</td>
+                <td>{user.role === 'ADMIN' ? "مدیر" : "کاربر عادی"}</td>
                 <td>
                   <button
                     type="button"
                     class="btn btn-primary edit-btn"
                   >
                     ویرایش
+                  </button>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-primary edit-btn"
+                    onClick={() => changeRole(user._id)}
+                  >
+                    تغییر نقش
                   </button>
                 </td>
                 <td>

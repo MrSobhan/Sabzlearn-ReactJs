@@ -72,8 +72,18 @@ export default function Sidebar() {
             </Link>
           </li>
           <li>
+            <Link to="tickets">
+              <span>تیکت‌ها</span>
+            </Link>
+          </li>
+          <li>
             <Link to="offs">
               <span>کدهای تخفیف</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="discounts">
+              <span>تخفیف همگانی</span>
             </Link>
           </li>
           <li>

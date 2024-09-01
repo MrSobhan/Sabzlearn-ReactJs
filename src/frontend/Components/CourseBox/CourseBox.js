@@ -84,6 +84,9 @@ export default function CourseBox(props) {
             <i className="fas fa-arrow-left course-box__footer-icon"></i>
           </Link>
         </div>
+        {( props.price !== 0 && props.discount) && (
+          <span class="courses-box__discount">%{props.discount}</span>
+        )}
       </div>
     </div>
   );
