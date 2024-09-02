@@ -25,9 +25,9 @@ export default function Sidebar() {
     <div id="sidebar" class="col-2">
       <div class="sidebar-header">
         <div class="sidebar-logo">
-          <a href="#">
+          <Link to="/">
             <img src="/images/logo/Logo.png" alt="Logo" />
-          </a>
+          </Link>
         </div>
 
         <div class="sidebar-menu-btn">

@@ -239,7 +239,7 @@ export default function Category() {
                                         href="#"
                                       >
                                         <img
-                                          src="/images/courses/fareelancer.png"
+                                          src={`http://localhost:4000/courses/covers/${course.cover}`}
                                           className="course__box-right-img"
                                         />
                                       </a>
